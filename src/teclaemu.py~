@@ -2,10 +2,9 @@
 import time
 from bluetooth import *
 from threading import Thread
-#
 # Tecla Emulator v1.0 
 # written by Akhil Rao
-#
+ 
 version = "v1.0"
 
 print 'Tecla - Emulator ' , version ;
