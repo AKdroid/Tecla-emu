@@ -33,13 +33,13 @@ print 'Accepted connection from ', addr
 
 #keyvalue is the dictionary used for holding character input from keyboard and corresponding value of the byte to be sent....
 
-keyvalue={ "w":0x01,		#Jumper 1 asserted
+keyvalue={ "w":0x01,		#Joystick 1 asserted
 	    "W":0x01,
-	    "s":0x02,		#Jumper 2 asserted
+	    "s":0x02,		#Joystick 2 asserted
 	    "S":0x02,
-	    "d":0x08,		#Jumper 4 asserted
+	    "d":0x08,		#Joystick 4 asserted
 	    "D":0x08,
-	    "a":0x04,		#Jumper 3 asserted
+	    "a":0x04,		#Joystick 3 asserted
 	    "A":0x04,		
 	    "2":0x10,		#Switch 2 asserted
 	    "1":0x20,		#Switch 1 asserted
@@ -50,24 +50,24 @@ keyvalue={ "w":0x01,		#Jumper 1 asserted
 	    }
 
 keymessage= {
-	    "w":"Event on Jumper 1 generated",		#Jumper 1 asserted
-	    "W":"Event on Jumper 1 generated",
-	    "s":"Event on Jumper 2 generated",		#Jumper 2 asserted
-	    "S":"Event on Jumper 2 generated",
-	    "d":"Event on Jumper 4 generated",		#Jumper 4 asserted
-	    "D":"Event on Jumper 4 generated",
-	    "a":"Event on Jumper 3 generated",		#Jumper 3 asserted
-	    "A":"Event on Jumper 3 generated",		
+	    "w":"Event on Joystick 1 generated",		#Joystick 1 asserted
+	    "W":"Event on Joystick 1 generated",
+	    "s":"Event on Joystick 2 generated",		#Joystick 2 asserted
+	    "S":"Event on Joystick 2 generated",
+	    "d":"Event on Joystick 4 generated",		#Joystick 4 asserted
+	    "D":"Event on Joystick 4 generated",
+	    "a":"Event on Joystick 3 generated",		#Joystick 3 asserted
+	    "A":"Event on Joystick 3 generated",		
 	    "2":"Event on Switch Port 2 generated",		#Switch 2 asserted
 	    "1":"Event on Switch Port 1 generated",		#Switch 1 asserted
 	    "q":"Quitting the emulator", 
 	    "Q":"Quitting the emulator"	
 	    }
 	    
-helpstring = "\nw/W => Generate Event on Jumper 1"
-helpstring=helpstring  + "\ns/S => Generate Event on Jumper 2 " 
-helpstring=helpstring  + "\na/A => Generate Event on Jumper 3 "
-helpstring=helpstring  + "\nd/D => Generate Event on Jumper 4 "
+helpstring = "\nw/W => Generate Event on Joystick 1"
+helpstring=helpstring  + "\ns/S => Generate Event on Joystick 2 " 
+helpstring=helpstring  + "\na/A => Generate Event on Joystick 3 "
+helpstring=helpstring  + "\nd/D => Generate Event on Joystick 4 "
 helpstring=helpstring  + "\n1 => Generate Event on Switch Port 1" 
 helpstring=helpstring  + "\n2 => Generate Event on Switch Port 2"
 helpstring=helpstring  + "\nh/H => view possible commands"
@@ -100,15 +100,5 @@ thr.start();
 while thr.isAlive():
 	client_socket.send(chr(0x70))
 	time.sleep(1)
-	"""a	
-	c=raw_input("your switch action w/s/a/d/1/2 ?");
-	if len(c) > 1:
-	      print("invalid value");
-	if(c== "w" or c=="a" or c=="s" or c=="d" or c=="1" or c=="2"):
-	      client_socket.send(chr(keyvalue[c]))
-	      time.sleep(2)
-	else:
-	      print("invalid value");
-	if chr(keyvalue[c]) == 1:
-		break;"""
+
 client_socket.close()
