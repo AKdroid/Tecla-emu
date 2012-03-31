@@ -47,6 +47,10 @@ keyvalue={ "w":0x01,		#Joystick 1 asserted
 	    "Q":0x88,		#Quit the emulator
 	    "h":0x77,
 	    "H":0x77,		#Show command lists
+	    "r":160,		
+	    "R":160,		#Release switch event
+	    "t":0x99,
+	    "T":0x99,		#Toggle release event mode
 	    }
 
 keymessage= {
@@ -61,7 +65,9 @@ keymessage= {
 	    "2":"Event on Switch Port 2 generated",		#Switch 2 asserted
 	    "1":"Event on Switch Port 1 generated",		#Switch 1 asserted
 	    "q":"Quitting the emulator", 
-	    "Q":"Quitting the emulator"	
+	    "Q":"Quitting the emulator",
+	    "r":"Switch Released ",
+	    "R":"Switch Released "				#Switch Released
 	    }
 	    
 helpstring = "\nw/W => Generate Event on Joystick 1"
@@ -75,23 +81,33 @@ helpstring=helpstring  + "\nq/Q => Quit "
 	     
 def listenkeys():
     exitflag=False;
+    auto_release_mode=True;
     while not exitflag :
-	c=raw_input("\n Your switch action w/s/a/d/1/2 ?");
-	if len(c) > 1:
-	      print("\ninvalid value");
-	if(c== "w" or c=="a" or c=="s" or c=="d" or c=="1" or c=="2" or c=="q" or c=="h" or c== "W" or c=="A" or c=="S" or c=="D" or c=="Q" or c=="H"):
-	    if(c != "q" and c !="h" and c!= "Q" and c!= "H"):
+	 c=raw_input("\n Your switch action w/s/a/d/1/2 ?");
+	#if(c== "w" or c=="a" or c=="s" or c=="d" or c=="1" or c=="2" or c=="q" or c=="h" or c== "W" or c=="A" or c=="S" or c=="D" or c=="Q" or c=="H"):
+	 if(len(c) == 1 and c in "wWsSaAdDqQhHrRtT12"): 
+	    if(not c in "qQhHtTrR"):
+	      client_socket.send(chr(keyvalue[c]))
+	      print "\n", keymessage[c];
+	      time.sleep(0.2)
+	      if auto_release_mode :
+		 # client_socket.send(chr(160))	      
+		  time.sleep(0.2)
+	      else:
+		time.sleep(1);
+	    if (not auto_release_mode) and keyvalue[c]== 160 :
 	      client_socket.send(chr(keyvalue[c]))
 	      print "\n", keymessage[c];
 	      time.sleep(1)
-	    if(keyvalue[c] == 0x77):
-		print helpstring
 	    if keyvalue[c] == 0x88:
 		exitflag= True;
 		print "\n",keymessage[c];
 	    else:
 		exitflag = False  
-	else:
+	    if(keyvalue[c]== 0x99):
+		auto_release_mode=not auto_release_mode;
+		print "\n auto release mode set to ", auto_release_mode;
+	 else:
 	      print("\ninvalid value");
 	
 	  
