@@ -37,9 +37,9 @@ uuid = "00001101-0000-1000-8000-00805F9B34FB"
 
 advertise_service(server_socket, "TeclaShield",uuid, service_classes=[SERIAL_PORT_CLASS], profiles=[SERIAL_PORT_PROFILE])
 
-client_socket, addr = server_socket.accept()
+print 'Waiting for a device ........'
 
-print 'Waiting for a device ........"
+client_socket, addr = server_socket.accept()
 
 print 'Accepted connection from ', addr
 
