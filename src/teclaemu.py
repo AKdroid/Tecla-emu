@@ -3,14 +3,24 @@ import time
 from bluetooth import *
 from threading import Thread
 #
-# Tecla Emulator v1.0 
+# Tecla Emulator v1.1 
 # written by Akhil Rao
 #
-version = "v1.0"
+#Keyboard 
+#J1 -> Highlight next 
+#J2 -> Highlight prev
+#J3 -> Cancel
+#J4 -> select highlighted
+#
+#SW1 ->Select highlighted
+#SW2 ->Cancel
+version = "v1.1"
 
 print 'Tecla - Emulator ' , version ;
 print 'press h/H for list of possible commands'
 print 'press q/Q to quit'
+print 'Auto switch release mode set to True'
+
 #setup the bluetooth RFComm socket i.e bind and start listening
 
 server_socket=BluetoothSocket( RFCOMM )
@@ -28,6 +38,8 @@ uuid = "00001101-0000-1000-8000-00805F9B34FB"
 advertise_service(server_socket, "TeclaShield",uuid, service_classes=[SERIAL_PORT_CLASS], profiles=[SERIAL_PORT_PROFILE])
 
 client_socket, addr = server_socket.accept()
+
+print 'Waiting for a device ........"
 
 print 'Accepted connection from ', addr
 
@@ -77,8 +89,10 @@ helpstring=helpstring  + "\nd/D => Generate Event on Joystick 4 "
 helpstring=helpstring  + "\n1 => Generate Event on Switch Port 1" 
 helpstring=helpstring  + "\n2 => Generate Event on Switch Port 2"
 helpstring=helpstring  + "\nh/H => view possible commands"
+helpstring=helpstring  + "\nr/R => Generate release switch event"
+helpstring=helpstring  + "\nt/T => Toggle auto switch release event"
 helpstring=helpstring  + "\nq/Q => Quit "
-	     
+helpstring=helpstring  + "\n\n\n#####Auto switch release mode is a mode in which switch release events are inserted after every switch event \nDefault set to true.\nCan be turned on or off by command t/T"	     
 def listenkeys():
     exitflag=False;
     auto_release_mode=True;
@@ -91,7 +105,7 @@ def listenkeys():
 	      print "\n", keymessage[c];
 	      time.sleep(0.2)
 	      if auto_release_mode :
-		 # client_socket.send(chr(160))	      
+		  client_socket.send(chr(160))	      
 		  time.sleep(0.2)
 	      else:
 		time.sleep(1);
@@ -99,6 +113,8 @@ def listenkeys():
 	      client_socket.send(chr(keyvalue[c]))
 	      print "\n", keymessage[c];
 	      time.sleep(1)
+	    if keyvalue[c]== 0x77:
+		print "\n ",helpstring ;
 	    if keyvalue[c] == 0x88:
 		exitflag= True;
 		print "\n",keymessage[c];
