@@ -101,17 +101,19 @@ def listenkeys():
 	#if(c== "w" or c=="a" or c=="s" or c=="d" or c=="1" or c=="2" or c=="q" or c=="h" or c== "W" or c=="A" or c=="S" or c=="D" or c=="Q" or c=="H"):
 	 if(len(c) == 1 and c in "wWsSaAdDqQhHrRtT12"): 
 	    if(not c in "qQhHtTrR"):
-	     # client_socket.send(chr(0x3F))
-	      #time.sleep(0.5)
+	      
 	      client_socket.send(chr(keyvalue[c]))
+	      time.sleep(0.1)
+	    #  client_socket.send(chr(0xFF - keyvalue[c]))
+	   #   time.sleep(0.5)
 	      print "\n", keymessage[c];
 	      time.sleep(0.5)
 	      if auto_release_mode :
-		  client_socket.send(chr(160))	      
+		  client_socket.send(chr(0xC0))	      
 		  time.sleep(0.5)
 	      else:
 		time.sleep(1);
-	    if (not auto_release_mode) and keyvalue[c]== 160 :
+	    if (not auto_release_mode) and keyvalue[c]== 0xC0:
 	      client_socket.send(chr(keyvalue[c]))
 	      print "\n", keymessage[c];
 	      time.sleep(1)
@@ -132,7 +134,9 @@ def listenkeys():
 thr= Thread(target=listenkeys);
 thr.start();
 while thr.isAlive():
-	client_socket.send(chr(0x70))
-	time.sleep(1)
+	a=client_socket.recv(1000)
+	if(len(a) == 1):
+	  client_socket.send(a)
+	  time.sleep(0.1)
 
 client_socket.close()
