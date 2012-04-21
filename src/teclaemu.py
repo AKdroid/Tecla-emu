@@ -31,8 +31,8 @@ server_socket.bind(('', 1))
 
 server_socket.listen(1)
 
-uuid = "00001101-0000-1000-8000-00805F9B34FB"
-
+#uuid = "00001101-0000-1000-8000-00805F9B34FB"
+uuid="00001101-0000-1000-8000-00000000ABCD"
 #uuid can be used if bluetooth client side program is written to minimize discovery and filtering time
 
 advertise_service(server_socket, "TeclaShield",uuid, service_classes=[SERIAL_PORT_CLASS], profiles=[SERIAL_PORT_PROFILE])
@@ -46,13 +46,13 @@ print 'Accepted connection from ', addr
 #keyvalue is the dictionary used for holding character input from keyboard and corresponding value of the byte to be sent....
 
 keyvalue={ "w":0x01,		#Joystick 1 asserted
-	    "W":0x01,
+	    "W":0x3E,
 	    "s":0x02,		#Joystick 2 asserted
-	    "S":0x02,
+	    "S":0x3D,
 	    "a":0x04,		#Joystick 4 asserted
-	    "A":0x04,
+	    "A":0x0B,
 	    "d":0x08,		#Joystick 3 asserted
-	    "D":0x08,		
+	    "D":0x07,		
 	    "1":0x10,		#Switch 1 asserted
 	    "2":0x20,		#Switch 2 asserted
 	    "q":0x88, 
@@ -96,23 +96,20 @@ helpstring=helpstring  + "\n\n\n#####Auto switch release mode is a mode in which
 def listenkeys():
     exitflag=False;
     auto_release_mode=True;
+    switchstate=0x3F;
     while not exitflag :
 	 c=raw_input("\n Your switch action w/s/a/d/1/2 ?");
 	#if(c== "w" or c=="a" or c=="s" or c=="d" or c=="1" or c=="2" or c=="q" or c=="h" or c== "W" or c=="A" or c=="S" or c=="D" or c=="Q" or c=="H"):
 	 if(len(c) == 1 and c in "wWsSaAdDqQhHrRtT12"): 
 	    if(not c in "qQhHtTrR"):
 	      
-	      client_socket.send(chr(keyvalue[c]))
+	      client_socket.send(chr(~keyvalue[c]&switchstate))
 	      time.sleep(0.1)
+	      client_socket.send(chr(switchstate|keyvalue[c]));
 	    #  client_socket.send(chr(0xFF - keyvalue[c]))
 	   #   time.sleep(0.5)
 	      print "\n", keymessage[c];
 	      time.sleep(0.5)
-	      if auto_release_mode :
-		  client_socket.send(chr(0xC0))	      
-		  time.sleep(0.5)
-	      else:
-		time.sleep(1);
 	    if (not auto_release_mode) and keyvalue[c]== 0xC0:
 	      client_socket.send(chr(keyvalue[c]))
 	      print "\n", keymessage[c];
